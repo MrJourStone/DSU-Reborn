@@ -65,6 +65,7 @@ class SettingsViewModel @Inject constructor(
     fun isAndroidQ(): Boolean = Build.VERSION.SDK_INT == 29
 
     fun updateSheetDisplay(sheet: DialogSheetState) {
+        session.setModalOpen(sheet != DialogSheetState.NONE)
         _uiState.update { it.copy(dialogSheetDisplay = sheet) }
     }
 

@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -46,6 +47,7 @@ import vegabobo.dsusideloader.ui.screen.images.ImageSelectionScreen
 import vegabobo.dsusideloader.ui.screen.libraries.LibrariesScreen
 import vegabobo.dsusideloader.ui.screen.logs.LogsScreen
 import vegabobo.dsusideloader.ui.screen.settings.Settings
+import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
 object Destinations {
     const val Homepage = "home"
@@ -91,8 +93,10 @@ private fun isTabSelected(tabRoute: String, currentRoute: String?): Boolean {
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
+    val navigationViewModel: NavigationViewModel = hiltViewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val isModalOpen by navigationViewModel.session.isModalOpen.collectAsStateWithLifecycle()
 
     val bottomInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val dockPadding = bottomInset + 104.dp
@@ -137,14 +141,16 @@ fun Navigation() {
             }
         }
 
-        FloatingNavigationBar(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            currentRoute = currentRoute,
-            onTabClick = ::navigateToTab,
-        )
+        if (!isModalOpen) {
+            FloatingNavigationBar(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                currentRoute = currentRoute,
+                onTabClick = ::navigateToTab,
+            )
+        }
     }
 }
 

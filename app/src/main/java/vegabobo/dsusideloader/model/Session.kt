@@ -63,6 +63,11 @@ class Session(
 
     val selectedImage = MutableStateFlow<SelectedImage?>(null)
     val installationLogs = MutableStateFlow("")
+    val isModalOpen = MutableStateFlow(false)
+
+    fun setModalOpen(isOpen: Boolean) {
+        isModalOpen.value = isOpen
+    }
 
     fun selectImage(name: String, uri: Uri) {
         userSelection.selectedFileName = name

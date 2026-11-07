@@ -82,16 +82,20 @@ class HomeViewModel @Inject constructor(
     private fun updateImageSizeCard(update: (ImageSizeCardState) -> ImageSizeCardState) =
         _uiState.update { it.copy(imageSizeCard = update(it.imageSizeCard.copy())) }
 
-    private fun updateSheetState(sheetDisplay: SheetDisplayState) =
+    private fun updateSheetState(sheetDisplay: SheetDisplayState) {
+        session.setModalOpen(sheetDisplay != SheetDisplayState.NONE)
         _uiState.update { it.copy(sheetDisplay = sheetDisplay) }
+    }
 
-    fun resetInstallationCard() =
+    fun resetInstallationCard() {
+        session.setModalOpen(false)
         _uiState.update {
             it.copy(
                 installationCard = InstallationCardState(),
                 sheetDisplay = SheetDisplayState.NONE,
             )
         }
+    }
 
     fun dismissSheet() = updateSheetState(SheetDisplayState.NONE)
 
