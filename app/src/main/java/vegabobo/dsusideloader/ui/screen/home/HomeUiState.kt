@@ -58,4 +58,27 @@ data class HomeUiState(
     fun isInstalling(): Boolean {
         return installationCard.installationStep != InstallationStep.NOT_INSTALLING
     }
+
+    fun isInstallationBusy(): Boolean {
+        return when (installationCard.installationStep) {
+            InstallationStep.NOT_INSTALLING,
+            InstallationStep.DSU_ALREADY_INSTALLED,
+            InstallationStep.DSU_ALREADY_RUNNING_DYN_OS,
+            InstallationStep.ERROR,
+            InstallationStep.ERROR_CANCELED,
+            InstallationStep.ERROR_REQUIRES_DISCARD_DSU,
+            InstallationStep.ERROR_ALREADY_RUNNING_DYN_OS,
+            InstallationStep.ERROR_CREATE_PARTITION,
+            InstallationStep.ERROR_EXTERNAL_SDCARD_ALLOC,
+            InstallationStep.ERROR_NO_AVAIL_STORAGE,
+            InstallationStep.ERROR_F2FS_WRONG_PATH,
+            InstallationStep.ERROR_EXTENTS,
+            InstallationStep.ERROR_SELINUX,
+            InstallationStep.ERROR_SELINUX_ROOTLESS,
+            InstallationStep.INSTALL_SUCCESS,
+            InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS -> false
+
+            else -> true
+        }
+    }
 }

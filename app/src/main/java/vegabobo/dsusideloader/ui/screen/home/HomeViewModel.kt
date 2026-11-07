@@ -100,6 +100,22 @@ class HomeViewModel @Inject constructor(
     //
 
     init {
+        viewModelScope.launch {
+            session.selectedImage.collect { selectedImage ->
+                updateInstallationCard {
+                    if (selectedImage == null) {
+                        it.copy(text = "", isTextFieldEnabled = true, isInstallable = false)
+                    } else {
+                        it.copy(
+                            text = selectedImage.name,
+                            isTextFieldEnabled = false,
+                            isInstallable = true,
+                        )
+                    }
+                }
+            }
+        }
+
         // Check if a DSU is already installed
         // Root-only because MANAGE_DYNAMIC_SYSTEM is required
         if (session.isRoot()) {
@@ -473,13 +489,24 @@ class HomeViewModel @Inject constructor(
             return
         }
 
-        session.userSelection.selectedFileName = filename
-        session.userSelection.selectedFileUri = uri
+        session.selectImage(filename, uri)
         updateInstallationCard {
             it.copy(
                 text = filename,
                 isTextFieldEnabled = false,
                 isInstallable = true,
+            )
+        }
+    }
+
+    fun clearSelectedImage() {
+        session.clearSelectedImage()
+        updateInstallationCard {
+            it.copy(
+                text = "",
+                isTextFieldEnabled = true,
+                isInstallable = false,
+                isError = false,
             )
         }
     }
@@ -528,7 +555,9 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onLogLineReceived() {
-        _uiState.update { it.copy(installationLogs = logger!!.logs) }
+        val logs = logger!!.logs
+        _uiState.update { it.copy(installationLogs = logs) }
+        session.installationLogs.value = logs
     }
 
     private fun onStepUpdate(step: InstallationStep) =

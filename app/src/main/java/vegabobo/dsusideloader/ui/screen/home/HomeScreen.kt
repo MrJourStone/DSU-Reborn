@@ -4,8 +4,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import kotlin.system.exitProcess
 import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.R
+import vegabobo.dsusideloader.preparation.InstallationStep
 import vegabobo.dsusideloader.ui.cards.DsuInfoCard
 import vegabobo.dsusideloader.ui.cards.ImageSizeCard
 import vegabobo.dsusideloader.ui.cards.UserdataCard
@@ -51,6 +50,7 @@ fun Home(
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val operationMode by homeViewModel.session.operationMode.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
 
     if (uiState.shouldKeepScreenOn) {
@@ -65,14 +65,12 @@ fun Home(
     }
 
     ApplicationScreen(
-        modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
         topBar = {
             TopBar(
-                barTitle = stringResource(id = R.string.app_name),
-                icon = Icons.Outlined.Settings,
+                barTitle = stringResource(id = R.string.home_title),
                 scrollBehavior = it,
-                onClickIcon = { navigate(Destinations.Preferences) },
             )
         },
         content = {
@@ -109,22 +107,48 @@ fun Home(
                 }
             }
             if (uiState.passedInitialChecks && uiState.additionalCard == AdditionalCardState.NONE) {
-                InstallationCard(
-                    uiState = uiState.installationCard,
+                HomeStatusCard(operationMode = operationMode)
+
+                val installationStep = uiState.installationCard.installationStep
+                val dsuInstalled = installationStep == InstallationStep.DSU_ALREADY_INSTALLED ||
+                    installationStep == InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS
+
+                SelectedImageCard(
+                    imageName = uiState.installationCard.text,
+                    installationStep = installationStep,
+                    isInstallable = uiState.installationCard.isInstallable,
+                    isInstalling = uiState.isInstallationBusy(),
+                    onClickChooseImage = { navigate(Destinations.Images) },
                     onClickInstall = { homeViewModel.onClickInstall() },
-                    onClickUnmountSdCardAndRetry = { homeViewModel.onClickUnmountSdCardAndRetry() },
-                    onClickSetSeLinuxPermissive = { homeViewModel.onClickSetSeLinuxPermissive() },
-                    onClickRetryInstallation = { homeViewModel.onClickRetryInstallation() },
-                    onClickClear = { homeViewModel.resetInstallationCard() },
-                    onSelectFileSuccess = { homeViewModel.onFileSelectionResult(it) },
-                    onClickCancelInstallation = { homeViewModel.onClickCancel() },
-                    onClickDiscardInstalledGsiAndInstall = { homeViewModel.onClickDiscardGsiAndStartInstallation() },
-                    onClickDiscardDsu = { homeViewModel.showDiscardSheet() },
-                    onClickRebootToDynOS = { homeViewModel.onClickRebootToDynOS() },
-                    onClickViewLogs = { homeViewModel.showLogsWarning() },
-                    onClickViewCommands = { navigate(Destinations.ADBInstallation) },
-                    minPercentageOfFreeStorage = homeViewModel.allocPercentageInt.toString(),
+                    onClickReboot = { homeViewModel.onClickRebootToDynOS() },
+                    onClickDiscard = {
+                        if (dsuInstalled) {
+                            homeViewModel.showDiscardSheet()
+                        } else {
+                            homeViewModel.clearSelectedImage()
+                        }
+                    },
                 )
+
+                if (installationStep != InstallationStep.NOT_INSTALLING) {
+                    InstallationCard(
+                        uiState = uiState.installationCard,
+                        onClickInstall = { homeViewModel.onClickInstall() },
+                        onClickUnmountSdCardAndRetry = { homeViewModel.onClickUnmountSdCardAndRetry() },
+                        onClickSetSeLinuxPermissive = { homeViewModel.onClickSetSeLinuxPermissive() },
+                        onClickRetryInstallation = { homeViewModel.onClickRetryInstallation() },
+                        onClickClear = { homeViewModel.resetInstallationCard() },
+                        onSelectFileSuccess = { homeViewModel.onFileSelectionResult(it) },
+                        onClickCancelInstallation = { homeViewModel.onClickCancel() },
+                        onClickDiscardInstalledGsiAndInstall = { homeViewModel.onClickDiscardGsiAndStartInstallation() },
+                        onClickDiscardDsu = { homeViewModel.showDiscardSheet() },
+                        onClickRebootToDynOS = { homeViewModel.onClickRebootToDynOS() },
+                        onClickViewLogs = { homeViewModel.showLogsWarning() },
+                        onClickViewCommands = { navigate(Destinations.ADBInstallation) },
+                        minPercentageOfFreeStorage = homeViewModel.allocPercentageInt.toString(),
+                    )
+                }
+
                 UserdataCard(
                     isEnabled = uiState.isInstalling(),
                     uiState = uiState.userDataCard,
@@ -137,6 +161,7 @@ fun Home(
                     onCheckedChange = { homeViewModel.onCheckImageSizeCard() },
                     onValueChange = { homeViewModel.updateImageSize(it) },
                 )
+                DeviceInfoCard()
                 DsuInfoCard(
                     onClickViewDocs = { uriHandler.openUri(HomeLinks.DSU_DOCS) },
                     onClickLearnMore = { uriHandler.openUri(HomeLinks.DSU_LEARN_MORE) },
