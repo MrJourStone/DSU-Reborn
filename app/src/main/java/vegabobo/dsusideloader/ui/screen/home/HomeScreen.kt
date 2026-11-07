@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Download
-import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -126,32 +125,24 @@ fun Home(
                     },
                 )
 
-                if (!uiState.isInstallationBusy()) {
-                    val canInstall = uiState.installationCard.text.isNotEmpty() && !dsuInstalled
+                val canInstall = uiState.installationCard.text.isNotEmpty() && !dsuInstalled
+                if (canInstall && !uiState.isInstallationBusy()) {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            if (canInstall) {
-                                homeViewModel.onClickInstall()
-                            } else {
-                                navigate(Destinations.Images)
-                            }
-                        },
+                        onClick = { homeViewModel.onClickInstall() },
                     ) {
                         Icon(
-                            imageVector = if (canInstall) Icons.Outlined.Download else Icons.Outlined.FolderOpen,
+                            imageVector = Icons.Outlined.Download,
                             contentDescription = null,
                         )
                         Spacer(modifier = Modifier.size(8.dp))
-                        Text(
-                            text = stringResource(
-                                id = if (canInstall) R.string.install else R.string.choose_image,
-                            ),
-                        )
+                        Text(text = stringResource(id = R.string.install))
                     }
                 }
 
-                if (installationStep != InstallationStep.NOT_INSTALLING) {
+                val showInstallationCard = installationStep != InstallationStep.NOT_INSTALLING &&
+                    installationStep != InstallationStep.DSU_ALREADY_INSTALLED
+                if (showInstallationCard) {
                     InstallationCard(
                         uiState = uiState.installationCard,
                         onClickInstall = { homeViewModel.onClickInstall() },

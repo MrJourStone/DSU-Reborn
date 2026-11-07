@@ -1,6 +1,7 @@
 package vegabobo.dsusideloader.ui.screen.images
 
 import android.app.Application
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.datastore.core.DataStore
@@ -86,7 +87,7 @@ class ImageSelectionViewModel @Inject constructor(
     }
 
     fun selectImage(image: ImageItem) {
-        session.selectImage(image.name, image.uri)
+        persistSelectedImage(image.name, image.uri)
     }
 
     fun selectFileFromUri(uri: Uri): Boolean {
@@ -101,8 +102,22 @@ class ImageSelectionViewModel @Inject constructor(
             return false
         }
 
-        session.selectImage(filename, uri)
+        runCatching {
+            application.contentResolver.takePersistableUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION,
+            )
+        }
+        persistSelectedImage(filename, uri)
         return true
+    }
+
+    private fun persistSelectedImage(name: String, uri: Uri) {
+        session.selectImage(name, uri)
+        viewModelScope.launch {
+            updateStringPref(AppPrefs.SELECTED_IMAGE_NAME, name)
+            updateStringPref(AppPrefs.SELECTED_IMAGE_URI, uri.toString())
+        }
     }
 
     fun isSelected(image: ImageItem): Boolean {

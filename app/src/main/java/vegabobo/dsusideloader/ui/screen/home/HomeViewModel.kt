@@ -105,6 +105,10 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            restoreSelectedImage()
+        }
+
+        viewModelScope.launch {
             session.selectedImage.collect { selectedImage ->
                 updateInstallationCard {
                     if (selectedImage == null) {
@@ -512,6 +516,30 @@ class HomeViewModel @Inject constructor(
                 isInstallable = false,
                 isError = false,
             )
+        }
+        viewModelScope.launch {
+            updateStringPref(AppPrefs.SELECTED_IMAGE_NAME, "")
+            updateStringPref(AppPrefs.SELECTED_IMAGE_URI, "")
+        }
+    }
+
+    private suspend fun restoreSelectedImage() {
+        val filename = readStringPref(AppPrefs.SELECTED_IMAGE_NAME)
+        val uriString = readStringPref(AppPrefs.SELECTED_IMAGE_URI)
+        if (filename.isEmpty() || uriString.isEmpty()) {
+            return
+        }
+
+        val uri = Uri.parse(uriString)
+        val canRead = runCatching {
+            application.contentResolver.openInputStream(uri)?.use { true } ?: false
+        }.getOrDefault(false)
+
+        if (canRead) {
+            session.selectImage(filename, uri)
+        } else {
+            updateStringPref(AppPrefs.SELECTED_IMAGE_NAME, "")
+            updateStringPref(AppPrefs.SELECTED_IMAGE_URI, "")
         }
     }
 

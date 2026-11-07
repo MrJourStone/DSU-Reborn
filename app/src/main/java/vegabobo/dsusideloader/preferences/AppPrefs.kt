@@ -20,4 +20,6 @@ object AppPrefs {
     const val UMOUNT_SD = "umount_sd"
     const val DISABLE_STORAGE_CHECK = "disable_storage_check"
     const val FULL_LOGCAT_LOGGING = "full_logcat_logging"
+    const val SELECTED_IMAGE_NAME = "selected_image_name"
+    const val SELECTED_IMAGE_URI = "selected_image_uri"
 }
