@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
+import vegabobo.dsusideloader.ui.components.LocalFloatingDockPadding
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.screen.home.HomeDeviceInfoProvider
 import vegabobo.dsusideloader.ui.util.launcherAcResult
@@ -93,7 +94,10 @@ fun LogsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 12.dp, bottom = 16.dp),
+                .padding(
+                    top = 12.dp,
+                    bottom = 16.dp + LocalFloatingDockPadding.current,
+                ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Surface(

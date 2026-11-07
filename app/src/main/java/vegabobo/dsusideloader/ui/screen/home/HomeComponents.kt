@@ -13,17 +13,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.FolderOpen
-import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -113,8 +109,8 @@ fun HomeStatusCard(operationMode: OperationMode) {
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        modifier = Modifier.size(32.dp),
-                        imageVector = Icons.Outlined.CheckCircle,
+                        modifier = Modifier.size(30.dp),
+                        imageVector = Icons.Outlined.Check,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onTertiary,
                     )
@@ -147,10 +143,7 @@ fun HomeStatusCard(operationMode: OperationMode) {
 fun SelectedImageCard(
     imageName: String,
     installationStep: InstallationStep,
-    isInstallable: Boolean,
     isInstalling: Boolean,
-    onClickChooseImage: () -> Unit,
-    onClickInstall: () -> Unit,
     onClickReboot: () -> Unit,
     onClickDiscard: () -> Unit,
 ) {
@@ -179,8 +172,8 @@ fun SelectedImageCard(
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
-                            modifier = Modifier.size(30.dp),
-                            imageVector = Icons.Outlined.Image,
+                            modifier = Modifier.size(28.dp),
+                            imageVector = Icons.Outlined.FolderOpen,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
@@ -208,32 +201,12 @@ fun SelectedImageCard(
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-                IconButton(onClick = onClickChooseImage) {
-                    Icon(
-                        imageVector = Icons.Outlined.FolderOpen,
-                        contentDescription = stringResource(id = R.string.choose_image),
-                    )
-                }
             }
 
-            Button(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = if (hasSelectedImage) onClickInstall else onClickChooseImage,
-                enabled = !isInstalling && (!hasSelectedImage || isInstallable),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Icon(
-                    imageVector = if (hasSelectedImage) Icons.Outlined.Download else Icons.Outlined.FolderOpen,
-                    contentDescription = null,
-                )
-                Spacer(modifier = Modifier.size(8.dp))
-                Text(
-                    text = stringResource(
-                        id = if (hasSelectedImage) R.string.install else R.string.choose_image,
-                    ),
-                )
-            }
-
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(
                     modifier = Modifier.weight(1F),
                     onClick = onClickReboot,

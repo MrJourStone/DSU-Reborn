@@ -3,13 +3,21 @@ package vegabobo.dsusideloader.ui.screen.home
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.FolderOpen
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -17,9 +25,6 @@ import kotlin.system.exitProcess
 import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.preparation.InstallationStep
-import vegabobo.dsusideloader.ui.cards.DsuInfoCard
-import vegabobo.dsusideloader.ui.cards.ImageSizeCard
-import vegabobo.dsusideloader.ui.cards.UserdataCard
 import vegabobo.dsusideloader.ui.cards.installation.InstallationCard
 import vegabobo.dsusideloader.ui.cards.warnings.GrantingPermissionCard
 import vegabobo.dsusideloader.ui.cards.warnings.RequiresLogPermissionCard
@@ -38,11 +43,6 @@ import vegabobo.dsusideloader.ui.sdialogs.ViewLogsBottomSheet
 import vegabobo.dsusideloader.ui.util.KeepScreenOn
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
-object HomeLinks {
-    const val DSU_LEARN_MORE = "https://developer.android.com/topic/dsu"
-    const val DSU_DOCS = "https://source.android.com/devices/tech/ota/dynamic-system-updates"
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
@@ -51,7 +51,6 @@ fun Home(
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val operationMode by homeViewModel.session.operationMode.collectAsStateWithLifecycle()
-    val uriHandler = LocalUriHandler.current
 
     if (uiState.shouldKeepScreenOn) {
         KeepScreenOn()
@@ -116,10 +115,7 @@ fun Home(
                 SelectedImageCard(
                     imageName = uiState.installationCard.text,
                     installationStep = installationStep,
-                    isInstallable = uiState.installationCard.isInstallable,
                     isInstalling = uiState.isInstallationBusy(),
-                    onClickChooseImage = { navigate(Destinations.Images) },
-                    onClickInstall = { homeViewModel.onClickInstall() },
                     onClickReboot = { homeViewModel.onClickRebootToDynOS() },
                     onClickDiscard = {
                         if (dsuInstalled) {
@@ -129,6 +125,31 @@ fun Home(
                         }
                     },
                 )
+
+                if (!uiState.isInstallationBusy()) {
+                    val canInstall = uiState.installationCard.text.isNotEmpty() && !dsuInstalled
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            if (canInstall) {
+                                homeViewModel.onClickInstall()
+                            } else {
+                                navigate(Destinations.Images)
+                            }
+                        },
+                    ) {
+                        Icon(
+                            imageVector = if (canInstall) Icons.Outlined.Download else Icons.Outlined.FolderOpen,
+                            contentDescription = null,
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Text(
+                            text = stringResource(
+                                id = if (canInstall) R.string.install else R.string.choose_image,
+                            ),
+                        )
+                    }
+                }
 
                 if (installationStep != InstallationStep.NOT_INSTALLING) {
                     InstallationCard(
@@ -149,23 +170,7 @@ fun Home(
                     )
                 }
 
-                UserdataCard(
-                    isEnabled = uiState.isInstalling(),
-                    uiState = uiState.userDataCard,
-                    onCheckedChange = { homeViewModel.onCheckUserdataCard() },
-                    onValueChange = { homeViewModel.updateUserdataSize(it) },
-                )
-                ImageSizeCard(
-                    isEnabled = uiState.isInstalling(),
-                    uiState = uiState.imageSizeCard,
-                    onCheckedChange = { homeViewModel.onCheckImageSizeCard() },
-                    onValueChange = { homeViewModel.updateImageSize(it) },
-                )
                 DeviceInfoCard()
-                DsuInfoCard(
-                    onClickViewDocs = { uriHandler.openUri(HomeLinks.DSU_DOCS) },
-                    onClickLearnMore = { uriHandler.openUri(HomeLinks.DSU_LEARN_MORE) },
-                )
             }
         },
     )

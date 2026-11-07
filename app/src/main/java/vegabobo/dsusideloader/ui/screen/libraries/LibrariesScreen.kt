@@ -21,6 +21,7 @@ import com.mikepenz.aboutlibraries.util.withContext
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.DynamicListItem
+import vegabobo.dsusideloader.ui.components.LocalFloatingDockPadding
 import vegabobo.dsusideloader.ui.components.PreferenceItem
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.screen.Destinations
@@ -74,7 +75,13 @@ fun LibrariesScreen(
                     )
                 }
             }
-            item { Spacer(modifier = Modifier.padding(26.dp)) }
+            item {
+                Spacer(
+                    modifier = Modifier.padding(
+                        bottom = 26.dp + LocalFloatingDockPadding.current,
+                    ),
+                )
+            }
         }
     }
 }

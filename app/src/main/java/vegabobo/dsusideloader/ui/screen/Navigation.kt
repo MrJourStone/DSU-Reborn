@@ -1,7 +1,15 @@
 package vegabobo.dsusideloader.ui.screen
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Image
@@ -12,11 +20,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -26,6 +38,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import vegabobo.dsusideloader.R
+import vegabobo.dsusideloader.ui.components.LocalFloatingDockPadding
 import vegabobo.dsusideloader.ui.screen.about.AboutScreen
 import vegabobo.dsusideloader.ui.screen.adb.AdbScreen
 import vegabobo.dsusideloader.ui.screen.home.Home
@@ -81,70 +94,95 @@ fun Navigation() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
-            NavigationBar(
-                containerColor = MaterialTheme.colorScheme.surface,
-                tonalElevation = 3.dp,
+    val bottomInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val dockPadding = bottomInset + 104.dp
+
+    fun navigateToTab(route: String) {
+        navController.navigate(route) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        CompositionLocalProvider(LocalFloatingDockPadding provides dockPadding) {
+            NavHost(
+                navController = navController,
+                startDestination = Destinations.Homepage,
+                modifier = Modifier.fillMaxSize(),
             ) {
-                bottomTabs.forEach { tab ->
-                    NavigationBarItem(
-                        selected = isTabSelected(tab.route, currentRoute),
-                        onClick = {
-                            navController.navigate(tab.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = tab.icon,
-                                contentDescription = stringResource(id = tab.label),
-                            )
-                        },
-                        label = { Text(text = stringResource(id = tab.label)) },
+                fun navigate(destination: String) {
+                    if (destination == Destinations.Up) {
+                        navController.navigateUp()
+                    } else {
+                        navController.navigate(destination)
+                    }
+                }
+
+                composable(Destinations.Homepage) { Home(navigate = { navigate(it) }) }
+                composable(Destinations.Images) {
+                    ImageSelectionScreen(
+                        navigate = { navigate(it) },
+                        onImageSelected = { navigateToTab(Destinations.Homepage) },
                     )
                 }
+                composable(Destinations.Logs) { LogsScreen() }
+                composable(Destinations.Preferences) { Settings(navigate = { navigate(it) }) }
+                composable(Destinations.ADBInstallation) { AdbScreen(navigate = { navigate(it) }) }
+                composable(Destinations.About) { AboutScreen(navigate = { navigate(it) }) }
+                composable(Destinations.Libraries) { LibrariesScreen(navigate = { navigate(it) }) }
             }
-        },
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Destinations.Homepage,
-            modifier = Modifier.padding(innerPadding),
-        ) {
-            fun navigate(destination: String) {
-                if (destination == Destinations.Up) {
-                    navController.navigateUp()
-                } else {
-                    navController.navigate(destination)
-                }
-            }
+        }
 
-            composable(Destinations.Homepage) { Home(navigate = { navigate(it) }) }
-            composable(Destinations.Images) {
-                ImageSelectionScreen(
-                    navigate = { navigate(it) },
-                    onImageSelected = {
-                        navController.navigate(Destinations.Homepage) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+        FloatingNavigationBar(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            currentRoute = currentRoute,
+            onTabClick = ::navigateToTab,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FloatingNavigationBar(
+    modifier: Modifier = Modifier,
+    currentRoute: String?,
+    onTabClick: (String) -> Unit,
+) {
+    val shape = RoundedCornerShape(28.dp)
+
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = shape,
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        tonalElevation = 3.dp,
+        shadowElevation = 8.dp,
+    ) {
+        NavigationBar(
+            modifier = Modifier.clip(shape),
+            containerColor = Color.Transparent,
+            tonalElevation = 0.dp,
+            windowInsets = WindowInsets(0, 0, 0, 0),
+        ) {
+            bottomTabs.forEach { tab ->
+                NavigationBarItem(
+                    selected = isTabSelected(tab.route, currentRoute),
+                    onClick = { onTabClick(tab.route) },
+                    icon = {
+                        Icon(
+                            imageVector = tab.icon,
+                            contentDescription = stringResource(id = tab.label),
+                        )
                     },
+                    label = { Text(text = stringResource(id = tab.label)) },
                 )
             }
-            composable(Destinations.Logs) { LogsScreen() }
-            composable(Destinations.Preferences) { Settings(navigate = { navigate(it) }) }
-            composable(Destinations.ADBInstallation) { AdbScreen(navigate = { navigate(it) }) }
-            composable(Destinations.About) { AboutScreen(navigate = { navigate(it) }) }
-            composable(Destinations.Libraries) { LibrariesScreen(navigate = { navigate(it) }) }
         }
     }
 }
