@@ -6,29 +6,35 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// Set of Material typography styles to start with
+// DSU-Reborn uses a single typographic family through the whole application.
+// Keep FontFamily.SansSerif on every Material 3 text style so that headings,
+// labels, cards, dialogs and the log console are never mixed with another font.
+private val AppFontFamily = FontFamily.SansSerif
+
+private fun TextStyle.withAppFont(): TextStyle = copy(fontFamily = AppFontFamily)
+
+private val DefaultTypography = Typography()
+
 val Typography = Typography(
+    displayLarge = DefaultTypography.displayLarge.withAppFont(),
+    displayMedium = DefaultTypography.displayMedium.withAppFont(),
+    displaySmall = DefaultTypography.displaySmall.withAppFont(),
+    headlineLarge = DefaultTypography.headlineLarge.withAppFont(),
+    headlineMedium = DefaultTypography.headlineMedium.withAppFont(),
+    headlineSmall = DefaultTypography.headlineSmall.withAppFont(),
+    titleLarge = DefaultTypography.titleLarge.withAppFont(),
+    titleMedium = DefaultTypography.titleMedium.withAppFont(),
+    titleSmall = DefaultTypography.titleSmall.withAppFont(),
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = AppFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp,
     ),
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
+    bodyMedium = DefaultTypography.bodyMedium.withAppFont(),
+    bodySmall = DefaultTypography.bodySmall.withAppFont(),
+    labelLarge = DefaultTypography.labelLarge.withAppFont(),
+    labelMedium = DefaultTypography.labelMedium.withAppFont(),
+    labelSmall = DefaultTypography.labelSmall.withAppFont(),
 )
