@@ -90,6 +90,23 @@ class StorageManager(
         return workspaceFolder
     }
 
+    fun listImagesInFolder(path: String): List<DocumentFile> {
+        if (path.isEmpty()) {
+            return emptyList()
+        }
+
+        val folder = DocumentFile.fromTreeUri(appContext, path.toUri()) ?: return emptyList()
+        if (!folder.exists() || !folder.canRead()) {
+            return emptyList()
+        }
+
+        return runCatching {
+            folder.listFiles()
+                .filter { it.isFile && it.name?.endsWith(".img", ignoreCase = true) == true }
+                .sortedBy { it.name?.lowercase() ?: "" }
+        }.getOrDefault(emptyList())
+    }
+
     fun cleanWorkspaceFolder(deleteAlsoGzFile: Boolean) {
         for (file in getWorkspaceFolder().listFiles()) {
             if (deleteAlsoGzFile || !file.name.toString().endsWith("gz")) {

@@ -23,6 +23,12 @@ class DevicePropUtils {
             return getSystemProperty("ro.boot.dynamic_partitions") == "true"
         }
 
+        fun getSystemPropertyValue(key: String, defaultValue: String = "Unknown"): String {
+            return runCatching { getSystemProperty(key) }
+                .getOrDefault(defaultValue)
+                .ifEmpty { defaultValue }
+        }
+
         private fun getSystemProperty(key: String): String {
             val systemPropertiesClass = Class.forName("android.os.SystemProperties")
             val value = HiddenApiBypass.invoke(systemPropertiesClass, null, "get", key)

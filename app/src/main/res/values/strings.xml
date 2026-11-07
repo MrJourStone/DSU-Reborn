@@ -222,6 +222,44 @@
     <string name="saved_logs">Logs saved!</string>
 
     <!--
+        Material 3 navigation and redesigned screens
+     -->
+
+    <string name="nav_home">Главная</string>
+    <string name="nav_images">Образы</string>
+    <string name="nav_logs">Логи</string>
+    <string name="nav_settings">Настройки</string>
+
+    <string name="home_title" translatable="false">DSU -Reborn</string>
+    <string name="working_status">Working</string>
+    <string name="method_status">Метод</string>
+
+    <string name="selected_image">Выбранный образ</string>
+    <string name="no_image_selected">Образ не выбран</string>
+    <string name="choose_image">Выбрать образ</string>
+    <string name="reboot">Reboot</string>
+    <string name="device_info">Информация об устройстве</string>
+    <string name="app_version">Версия приложения</string>
+    <string name="kernel_version">Kernel version</string>
+    <string name="device_model">Device model</string>
+    <string name="vbmeta_status">VBMeta status</string>
+    <string name="selinux_status">SELinux status</string>
+
+    <string name="image_selection_title">Интерактивный выбор образов</string>
+    <string name="search_images">Поиск образов</string>
+    <string name="images_empty">В выбранной папке нет .img файлов</string>
+    <string name="images_folder_missing">Сначала выберите папку для хранения образов</string>
+    <string name="images_folder_missing_action">Открыть настройки</string>
+    <string name="image_options">Опции</string>
+    <string name="refresh_images">Обновить список</string>
+    <string name="pick_image_file">Выбрать файл вручную</string>
+    <string name="image_selected">Образ выбран</string>
+
+    <string name="logs_title">Логи / Журнал работы</string>
+    <string name="logs_empty">Журнал пока пуст…</string>
+    <string name="logs_diagnostics">Отладочная информация</string>
+
+    <!--
         Generic and multipurpose strings
      -->
 

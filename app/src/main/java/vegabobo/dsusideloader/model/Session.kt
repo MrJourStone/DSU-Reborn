@@ -10,6 +10,11 @@ data class InstallationPreferences(
     var useBuiltinInstaller: Boolean = false,
 )
 
+data class SelectedImage(
+    val name: String,
+    val uri: Uri,
+)
+
 class UserSelection(
     var userSelectedUserdata: Long = DSUConstants.DEFAULT_USERDATA,
     var userSelectedImageSize: Long = DSUConstants.DEFAULT_IMAGE_SIZE,
@@ -55,6 +60,21 @@ class Session(
     var preferences: InstallationPreferences = InstallationPreferences(),
     var operationMode: MutableStateFlow<OperationMode> = MutableStateFlow(OperationMode.ADB),
 ) {
+
+    val selectedImage = MutableStateFlow<SelectedImage?>(null)
+    val installationLogs = MutableStateFlow("")
+
+    fun selectImage(name: String, uri: Uri) {
+        userSelection.selectedFileName = name
+        userSelection.selectedFileUri = uri
+        selectedImage.value = SelectedImage(name, uri)
+    }
+
+    fun clearSelectedImage() {
+        userSelection.selectedFileName = ""
+        userSelection.selectedFileUri = Uri.EMPTY
+        selectedImage.value = null
+    }
 
     fun isRoot(): Boolean {
         return (
