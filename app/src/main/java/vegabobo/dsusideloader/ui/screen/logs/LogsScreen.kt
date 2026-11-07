@@ -43,7 +43,6 @@ import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogsScreen(
-    navigate: (String) -> Unit,
     logsViewModel: LogsViewModel = hiltViewModel(),
 ) {
     val logs by logsViewModel.logs.collectAsStateWithLifecycle()

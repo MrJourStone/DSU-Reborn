@@ -7,6 +7,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -73,6 +74,7 @@ private fun isTabSelected(tabRoute: String, currentRoute: String?): Boolean {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
@@ -138,7 +140,7 @@ fun Navigation() {
                     },
                 )
             }
-            composable(Destinations.Logs) { LogsScreen(navigate = { navigate(it) }) }
+            composable(Destinations.Logs) { LogsScreen() }
             composable(Destinations.Preferences) { Settings(navigate = { navigate(it) }) }
             composable(Destinations.ADBInstallation) { AdbScreen(navigate = { navigate(it) }) }
             composable(Destinations.About) { AboutScreen(navigate = { navigate(it) }) }

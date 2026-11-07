@@ -76,7 +76,8 @@ data class HomeUiState(
             InstallationStep.ERROR_SELINUX,
             InstallationStep.ERROR_SELINUX_ROOTLESS,
             InstallationStep.INSTALL_SUCCESS,
-            InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS -> false
+            InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS,
+            -> false
 
             else -> true
         }
