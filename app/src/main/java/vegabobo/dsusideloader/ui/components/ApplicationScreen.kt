@@ -57,6 +57,7 @@ fun ApplicationScreen(
                 .fillMaxSize(),
             topBar = { topBar(scrollBehavior) },
             bottomBar = { bottomBar() },
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
             content = { innerPadding ->
                 val scrollModifier =
                     if (enableDefaultScrollBehavior) Modifier.verticalScroll(rememberScrollState()) else Modifier

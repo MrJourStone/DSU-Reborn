@@ -1,5 +1,6 @@
 package vegabobo.dsusideloader.ui.components
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,6 +21,7 @@ fun TopBar(
     iconContentDescription: String? = "icon",
     onClickIcon: () -> Unit = {},
     onClickBackButton: (() -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     LargeTopAppBar(
         title = { Text(text = barTitle) },
@@ -34,6 +36,7 @@ fun TopBar(
             }
         },
         actions = {
+            actions()
             if (icon != null) {
                 IconButton(onClickIcon) {
                     Icon(
