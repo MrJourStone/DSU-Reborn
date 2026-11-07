@@ -235,6 +235,7 @@
     <string name="method_status">Метод</string>
 
     <string name="selected_image">Выбранный образ</string>
+    <string name="userdata_size_description">Размер пользовательских данных в гигабайтах</string>
     <string name="no_image_selected">Образ не выбран</string>
     <string name="choose_image">Выбрать образ</string>
     <string name="reboot">Reboot</string>

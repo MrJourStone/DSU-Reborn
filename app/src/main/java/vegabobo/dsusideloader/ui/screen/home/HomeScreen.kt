@@ -24,6 +24,7 @@ import kotlin.system.exitProcess
 import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.preparation.InstallationStep
+import vegabobo.dsusideloader.ui.cards.UserdataCard
 import vegabobo.dsusideloader.ui.cards.installation.InstallationCard
 import vegabobo.dsusideloader.ui.cards.warnings.GrantingPermissionCard
 import vegabobo.dsusideloader.ui.cards.warnings.RequiresLogPermissionCard
@@ -123,6 +124,13 @@ fun Home(
                             homeViewModel.clearSelectedImage()
                         }
                     },
+                )
+
+                UserdataCard(
+                    isEnabled = uiState.isInstalling(),
+                    uiState = uiState.userDataCard,
+                    onCheckedChange = { homeViewModel.onCheckUserdataCard() },
+                    onValueChange = { homeViewModel.updateUserdataSize(it) },
                 )
 
                 val canInstall = uiState.installationCard.text.isNotEmpty() && !dsuInstalled
