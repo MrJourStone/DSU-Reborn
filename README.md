@@ -4,6 +4,19 @@ DSU-Reborn is a fork of [DSU Sideloader](https://github.com/VegaBobo/DSU-Sideloa
 
 [![Latest release](https://img.shields.io/github/v/release/MrJourStone/DSU-Reborn)](https://github.com/MrJourStone/DSU-Reborn/releases/latest)
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="other/Screenshot-1.jpg" width="240" alt="Home screen"><br><sub><b>Home</b></sub></td>
+    <td align="center"><img src="other/Screenshot-2.jpg" width="240" alt="Interactive image selection"><br><sub><b>Image selection</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="other/Screenshot-3.jpg" width="240" alt="Logs"><br><sub><b>Logs</b></sub></td>
+    <td align="center"><img src="other/Screenshot-4.jpg" width="240" alt="Settings"><br><sub><b>Settings</b></sub></td>
+  </tr>
+</table>
+
 ## Features
 
 - Material Design 3 interface with Monet dynamic color support.
