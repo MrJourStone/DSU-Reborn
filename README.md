@@ -174,7 +174,7 @@ The `.sign` directory is ignored by git. Never commit signing keys or passwords.
 ## Credits
 
 - Original DSU Sideloader by [VegaBobo](https://github.com/VegaBobo) and contributors.
-- DSU-Reborn fork maintained by [MrJourStone](https://github.com/MrJourStone).
+- DSU-Reborn fork maintained by [OceanSt0ne](https://github.com/OceanSt0ne).
 
 ## License
 
