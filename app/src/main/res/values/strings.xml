@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">DSU Sideloader</string>
+    <string name="app_name" translatable="false">DSU-Reborn</string>
 
     <!--
         Home screen
@@ -230,7 +230,7 @@
     <string name="nav_logs">Логи</string>
     <string name="nav_settings">Настройки</string>
 
-    <string name="home_title" translatable="false">DSU -Reborn</string>
+    <string name="home_title" translatable="false">DSU-Reborn</string>
     <string name="working_status">Working</string>
     <string name="method_status">Метод</string>
 
