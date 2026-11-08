@@ -1,7 +1,7 @@
 import java.util.Properties
 
 fun getReleaseSigningConfig(): File {
-    return File(".sign/dsu_sideloader.prop")
+    return File(rootProject.projectDir, ".sign/dsu_sideloader.prop")
 }
 
 plugins {
