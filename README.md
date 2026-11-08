@@ -1,138 +1,169 @@
-# DSU Sideloader
+# DSU-Reborn
 
-A simple app made to help users easily install GSIs via DSU's Android feature.
-<div>
-<img src="https://raw.githubusercontent.com/VegaBobo/DSU-Sideloader/master/other/preview_1.png" alt="preview" width="200"/>  
-<img src="https://raw.githubusercontent.com/VegaBobo/DSU-Sideloader/master/other/preview_2.png" alt="preview" width="200"/>  
-</div>
+DSU-Reborn is a fork of [DSU Sideloader](https://github.com/VegaBobo/DSU-Sideloader) with a Material Design 3 interface and a set of usability improvements for installing GSIs through Android's Dynamic System Updates feature.
+
+[![Latest release](https://img.shields.io/github/v/release/MrJourStone/DSU-Reborn)](https://github.com/MrJourStone/DSU-Reborn/releases/latest)
+
+## Features
+
+- Material Design 3 interface with Monet dynamic color support.
+- Floating navigation dock that stays out of the way while dialogs and bottom sheets are open.
+- Dedicated tabs for image selection and installation logs.
+- Remembers the selected `.img` file between app launches.
+- Userdata size control with validation against the available allocation limit.
+- Root, Shizuku, ADB, and system operation modes.
+- Installation progress, diagnostics, and optional built-in DSU installer.
 
 ## Requirements
+
 - Android 10 or higher
-- Unlocked Bootloader
+- Unlocked bootloader
 - Device with Dynamic Partitions
-- A GSI you want to use!
+- A GSI you want to use
 
 Community GSIs: https://github.com/phhusson/treble_experimentations/wiki/Generic-System-Image-%28GSI%29-list
 
 Google GSIs: https://developer.android.com/topic/generic-system-image/releases
 
-**Remember to use GSIs compatible with your architeture, vndk implementation..*
+**Remember to use GSIs compatible with your architecture and VNDK implementation.**
 
 ## Downloads
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-     alt="Get it on F-Droid"
-     height="80">](https://f-droid.org/packages/vegabobo.dsusideloader/)
+Download the latest signed APK from the [Releases section](https://github.com/MrJourStone/DSU-Reborn/releases/latest).
 
-Or download the latest APK from the [Releases Section](https://github.com/VegaBobo/DSU-Sideloader/releases/latest).
-For testing builds, you can check artifacts at [Actions](https://github.com/VegaBobo/DSU-Sideloader/actions) tab
+Current release: **DSU-Reborn v1.0** (`DSU-Reborn-v1.0.apk`).
 
-## How to use?
-1. Install app
-2. When opening for the first time, you need to give read/write permission to a folder, create a new folder and allow access  
-   **this folder will be used to store temporary files, like extracted GSIs from compressed files)*
-3. Select a GSI to install  
-   **accepted formats are: gz, xz, img and zip (only DSU packages)
-4. You can customize installation as you want  
-   **like changing userdata size for dynamic system*  
-   **changing gsi file size is not recommended (let app do it automatically)*
-5. Tap on "Install"
-6. Wait until finishes! (it may take a some time)
-7. Once it finishes, next step may vary:
-	- If built-in installer is enabled, no extra step is required.
-	- When built-in installer is disabled, on rooted/system/shizuku operation mode, DSU screen will appear, prompting you to confirm installation, after that, check your notifications, DSU should start installing GSI.
-	- On ADB operation mode, you will be prompted to run a command in adb, once you run, DSU screen will appear asking you to confirm installation, after that, DSU should start installing GSI.
-8. Once dynamic system is ready, you can boot it through notifications, or, if operation mode is supported, directly from our app.
+## How to use
 
-For more usage information, you can check [Operation modes](#operation-modes)
+1. Install the app.
+2. On first launch, grant read/write access to a folder. This folder is used for temporary files, such as GSIs extracted from compressed archives.
+3. Select a GSI to install. Accepted formats are `gz`, `xz`, `img`, and `zip` (only DSU packages).
+4. Adjust the installation options if needed:
+   - You can change the userdata size for the dynamic system.
+   - Changing the GSI image size is not recommended; let the app calculate it automatically.
+5. Tap **Install**.
+6. Wait for the installation to finish. Depending on the operation mode, you may need to confirm the DSU installation from the system dialog or run an ADB command.
+7. Once the dynamic system is ready, boot into it from the notification, or directly from the app when the operation mode supports it.
+
+For more information, see [Operation modes](#operation-modes).
 
 ## Operation modes
 
-DSU Sideloader support multiple operation modes, they will define how our app will work, also, the operation mode is obtained automatically, and by now, is impossible to change it manually, the picked operation mode will be the best available (the priority is written below, in which, the most feature supported, is the highest number, and the most basic one is the lowest).
+DSU-Reborn supports several operation modes. The app selects the best available mode automatically; it cannot be changed manually. The most capable supported mode is preferred.
 
-1. ADB: Default operation mode when other modes aren't available
-- Only prepare selected image to be installed via DSU system-app
-- Requires adb command to start installation (which will invoke DSU system-app to install the prepared file)
-2. Shizuku: When running app with Shizuku (Obtained when Shizuku permission is granted)
-- Same as ADB, however, it does not require to run any adb command
-- Support tracking installation progress ¹ ² ³
-- Support installation diagnostics (if a common error is detected, it may give you useful information) ¹ ³
-3. Root: When running app with root permissions (Obtained when user grant root permission)
-- All features avaiable in Shizuku, however, does not require any special permissions
-- DynamicSystem API features (check if DSU is installed, reboot to DSU, discard..., everthing directly from app)
-- Support built-in DSU installer ⁴ ⁵
-4. System mode: When running as system-app (Obtained by installing our Magisk module)
-- All features avaiable in Shizuku
-- Fixes for some common gsi/dsu-related SELinux denials
-- Custom gsid binary (can fix some installation errors in some devices ⁵ ⁶
-5. System/Root mode: When running as system-app with granted root permission (Obtained by installing our Magisk module and granting root permission)
-- All features available in root and system operation mode
+1. **ADB**: Default mode when no other mode is available.
+   - Prepares the selected image for installation through the DSU system app.
+   - Requires an ADB command to start the installation.
+2. **Shizuku**: Available when Shizuku permission is granted.
+   - Same as ADB, but does not require running an ADB command.
+   - Supports installation progress tracking.¹ ² ³
+   - Supports installation diagnostics for common errors.¹ ³
+3. **Root**: Available when root permission is granted.
+   - Includes all Shizuku features without requiring special permissions.
+   - Provides DynamicSystem API features: check whether DSU is installed, reboot into DSU, discard the installation, and more.
+   - Supports the built-in DSU installer.⁴ ⁵
+4. **System mode**: Available when installed as a system app through the Magisk module.
+   - Includes all Shizuku features.
+   - Fixes some common GSI/DSU-related SELinux denials.
+   - Includes a custom `gsid` binary that can fix installation errors on some devices.⁵ ⁶
+5. **System/Root mode**: Available when running as a system app with root permission.
+   - Includes all features from the Root and System modes.
 
-¹ Requires READ_LOGS permission.
+¹ Requires the `READ_LOGS` permission.
 <br>
-² Partital support on Android 10 and 11.
+² Partial support on Android 10 and 11.
 <br>
 ³ Android 13 requires "One-time log access".
 <br>
-⁴ Feature not supported on Android 10.
+⁴ Not supported on Android 10.
 <br>
-⁵ Experimental feature, built-in installer code is [here](https://github.com/VegaBobo/DSU-Sideloader/blob/master/app/src/main/java/vegabobo/dsusideloader/installer/root/DSUInstaller.kt).
+⁵ Experimental feature. The built-in installer code is [here](https://github.com/MrJourStone/DSU-Reborn/blob/master/app/src/main/java/vegabobo/dsusideloader/installer/root/DSUInstaller.kt).
 <br>
-⁶ Module including custom gsid binary is optional, changes made to AOSP gsid binary can be found [here](https://github.com/VegaBobo/DSU-Sideloader/tree/master/magisk-module/src/main/resources/aosp_patches).
+⁶ The module with the custom `gsid` binary is optional. Changes to the AOSP `gsid` binary are [here](https://github.com/MrJourStone/DSU-Reborn/tree/master/magisk-module/src/main/resources/aosp_patches).
 
-#### Recomendations
+### Recommendations
 
-- For non-rooted devices, Shizuku is a pretty nice operation mode, it support most features with no hassle, however, you need to install and setup [Shizuku](https://play.google.com/store/apps/details?id=moe.shizuku.privileged.api) app in your device.
-- For rooted devices, Root operation mode is more than ok for most people.
-- If you're having issues with DSU feature, go with System/Root.
-- Rooted devices via Magisk, should be running Magisk v24 or higher, older versions may break DSU feature.
-- We highly recommend using this app with Stock ROM, some Custom ROM builds may also work fine.
+- For non-rooted devices, Shizuku is the most convenient option. Install and configure [Shizuku](https://play.google.com/store/apps/details?id=moe.shizuku.privileged.api) first.
+- For rooted devices, Root mode is sufficient for most users.
+- If you have issues with DSU, try System/Root mode.
+- Rooted devices using Magisk should run Magisk v24 or newer. Older versions may break DSU.
+- Stock ROMs are recommended. Some custom ROM builds may also work.
 
 ## Common questions
 
-1. DSU installation finishes with no errors, but device doesn't boot into installed DSU, what should i do?
-- It is likely that AVB is preventing device from booting installed images, try flashing disabled vbmeta, check [this](https://developer.android.com/topic/generic-system-image#flash-gsi) for more info.
-2. Why isn't possible to set a high userdata value?
-- The more storage you have free, the more you can use to be your userdata, some Android versions limit the maximum allowed for allocation (this limitation is 40%, and is not our app limitation, it is a thing from Android itself, you can use our custom gsid binary, which reduces this limitation to 20%, is possible to eliminate it, but no clue if there is some implications, so, i just decided to decrease it).
-3. Why "Unmount SD" option exists?
-- If available, DSU priorizes allocation in sdcard, but allocating in sdcard is not supported in some cases (it may depends on filesystem present on sd, and if the allocation in SD is allowed by OS itself), since allocating in SD may cause installation errors in some devices, that options is here to enforce allocation in device storage.
-4. Why built-in installer requires root?
-- Because it uses Android's internal DynamicSystem API, which requires "MANAGE_DYNAMIC_SYSTEM", which is a signature protection level, the convenient way to circumvent it, is by using root. shell (2000) has "INSTALL_DYNAMIC_SYSTEM", which is able to call DSU system-app (this one has "MANAGE_DYNAMIC_SYSTEM") to install images.
-5. How about updates?
-- Our app comes with a updater, you can check updates in "About" section.
-6. Other question? problem?
-- Feel free to start a issue, for troubleshooting, don't forget to send logs (logs can be obtained on installation phase, directly on app, when operation mode support installation diagnostics).
+1. **DSU installation finishes without errors, but the device does not boot into the installed DSU. What should I do?**
+   - AVB may be preventing the device from booting the installed image. Try flashing a disabled vbmeta image. See [the Android documentation](https://developer.android.com/topic/generic-system-image#flash-gsi) for details.
+2. **Why can't I set a higher userdata value?**
+   - The more free storage you have, the more you can allocate to userdata. Some Android versions limit the maximum allocation to 40% of available space. This is an Android limitation, not an app limitation. The custom `gsid` binary reduces the limit to 20%.
+3. **Why does the "Unmount SD" option exist?**
+   - When available, DSU prefers allocating on the SD card, but allocation on SD cards is not supported in some cases. This option forces allocation on internal storage.
+4. **Why does the built-in installer require root?**
+   - It uses Android's internal DynamicSystem API, which requires the signature-level `MANAGE_DYNAMIC_SYSTEM` permission. Root is the practical way to access it. The shell user has `INSTALL_DYNAMIC_SYSTEM` and can ask the DSU system app to perform the installation.
+5. **How do I get updates?**
+   - Check the [Releases section](https://github.com/MrJourStone/DSU-Reborn/releases). Release APKs are signed with the DSU-Reborn release key.
+6. **Something else is wrong. Where can I report it?**
+   - Open an issue in this repository. Include logs when possible; installation logs can be viewed directly in the app when the active operation mode supports diagnostics.
 
 ## About DSU
-DSU (Dynamic System Updates), is a feature introduced on Android 10, that let developers boot GSIs without touching current system partition, this is done by creating new partitions to hold a GSI and a separated userdata, to boot on them when desired.
 
-Unfortunelly, DSU depends on Dynamic Partitions (your device need to support, otherwise, won't work), and most GSIs requires unlocked bootloader to get them booting properly (since only OEM-Signed GSIs are allowed to boot on locked bootloader).
+DSU (Dynamic System Updates) is a feature introduced in Android 10 that lets developers boot GSIs without modifying the current system partition. Android creates separate partitions for the GSI and its userdata, then boots from them when requested.
 
-GSIs can be installed via DSU without root access, using ADB, running some commands, you can read more about installation process here: https://developer.android.com/topic/dsu
+DSU requires Dynamic Partitions. Most GSIs also require an unlocked bootloader, because only OEM-signed GSIs are allowed to boot on locked bootloaders.
 
-Once installation finishes, Android creates a persistent notification allowing you to boot into "Dynamic System" (GSI installed via DSU), and you can boot into installed GSI, without touching your system partition, or breaking the "real userdata" partition.
+GSIs can be installed through DSU without root access by using ADB commands. Read more about the installation process in the [Android documentation](https://developer.android.com/topic/dsu).
 
-After booting Dynamic System, you can try and test whatever you want, when you need to switch back to device's original system image, everything you need to do, is just, a simple reboot!
+After installation, Android creates a persistent notification that lets you boot into the Dynamic System. Your original system partition and userdata remain untouched. To return to the original system, simply reboot.
 
-When doing a long test, that may requires lots of reboots, this can be a pain, however, is possible to enable "sticky mode", that enforces dynamic system, instead of device's original system image, once tests are done, you can disable sticky mode and return to original system image.
-
-That is basically a quickly explanation about DSU, a amazing feature, like a "dual-boot" solution, limited, however, very safe (since no read-only partition will be modified, and if GSI does not boot, just a simple reboot will return you to the original device's system image).
+For longer testing sessions, you can enable sticky mode to keep booting into the dynamic system until you disable it.
 
 You can read more about DSU here: https://source.android.com/devices/tech/ota/dynamic-system-updates
 
-## How to enable Sticky Mode?
+## How to enable Sticky Mode
 
-Reboot to Dynamic System, and:
-- use this command on adb: `adb shell gsi_tool enable`
-- or from local adb shell:  `gsi_tool enable`
-- or from local rooted shell (eg. Termux on rooted GSI):  `su -c 'gsi_tool enable'`
+Boot into the dynamic system, then use one of the following:
 
-When sticky mode is enabled, device will always boot into dynamic system, instead of device's original system image.
+- ADB: `adb shell gsi_tool enable`
+- Local ADB shell: `gsi_tool enable`
+- Local rooted shell (for example, Termux on a rooted GSI): `su -c 'gsi_tool enable'`
 
-To disable, use the same command, instead of `enable` , use `disable`
+To disable sticky mode, use the same command with `disable` instead of `enable`.
 
-## Other
+## Building from source
 
-For translators, we now have a Crowdin, feel free send your translations:
-<br>https://crowdin.com/translate/dsu-sideloader/<br>
-App icon made by [WSTxda](https://github.com/WSTxda)
+Requirements:
+
+- JDK 17
+- Android SDK with platform 33 and build-tools installed
+
+Build the debug variant:
+
+```bash
+./gradlew assembleMiniDebug
+```
+
+Build a release APK:
+
+```bash
+./gradlew assembleRelease
+```
+
+Release signing is read from `.sign/dsu_sideloader.prop` at the repository root:
+
+```properties
+keystore=/absolute/path/to/release.jks
+keystore_pw=your_store_password
+alias=your_key_alias
+alias_pw=your_key_password
+```
+
+The `.sign` directory is ignored by git. Never commit signing keys or passwords.
+
+## Credits
+
+- Original DSU Sideloader by [VegaBobo](https://github.com/VegaBobo) and contributors.
+- DSU-Reborn fork maintained by [MrJourStone](https://github.com/MrJourStone).
+- Original DSU Sideloader icon by [WSTxda](https://github.com/WSTxda).
+
+## License
+
+DSU-Reborn is distributed under the same license as the original project. See [LICENSE](LICENSE).
